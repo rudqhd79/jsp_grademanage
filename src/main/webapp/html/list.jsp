@@ -1,0 +1,73 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.sql.*"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<%@ include file="header.jsp"%>
+	<%@ include file="nav.jsp"%>
+	<section>
+		<%
+		Class.forName("oracle.jdbc.OracleDriver");
+		Connection con = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/xe", "kkb", "1234");
+		request.setCharacterEncoding("UTF-8");
+		
+		try {
+
+			String sql = "select a.stid, a.stname, decode(substr(a.resident, 8, 1), '1', '남자', '2', '여자', '3', '남자', '4', '여자'),";
+			sql += " b.subject, decode(a.dtcode, '01', '전공필수', '02', '전공선택', '03', '교양필수', '04', '교양선택'),";
+			sql += " b.professor, c.mid, c.final, c.attend";
+			sql += " from table_std_01 a, table_subject_02 b, table_result_03 c where a.stid = c.stid and b.subjectcode = c.dtcode";
+
+			Statement ps = con.createStatement();
+			ResultSet rs = ps.executeQuery(sql);
+		%>
+		<table>
+			<caption>전체성적조회</caption>
+			<tr>
+				<th>학번</th>
+				<th>성명</th>
+				<th>성별</th>
+				<th>과목명</th>
+				<th>전공구분</th>
+				<th>담당교수</th>
+				<th>중간</th>
+				<th>기말</th>
+				<th>출석</th>
+				<th>레포트</th>
+				<th>기타</th>
+				<th>점수</th>
+				<th>등급</th>
+			</tr>
+			<%
+			while(rs.next()) {
+			%>
+			<tr>
+				<td><%=rs.getString(1) %></td>
+				<td><%=rs.getString(2) %></td>
+				<td><%=rs.getString(3) %></td>
+				<td><%=rs.getString(4) %></td>
+				<td><%=rs.getString(5) %></td>
+				<td><%=rs.getString(6) %></td>
+				<td><%=rs.getInt(7) %></td>
+				<td><%=rs.getInt(8) %></td>
+				<td><%=rs.getInt(9) %></td>
+			</tr>
+		</table>
+		<%
+			}
+			con.close();
+			ps.close();
+		} catch (Exception e) {
+		e.printStackTrace();
+		}
+		%>
+	</section>
+	<%@ include file="footer.jsp"%>
+</body>
+</html>
