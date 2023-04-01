@@ -19,10 +19,16 @@
 		
 		try {
 
-			String sql = "select a.stid, a.stname, decode(substr(a.resident, 8, 1), '1', '남자', '2', '여자', '3', '남자', '4', '여자'),";
-			sql += " b.subject, decode(a.dtcode, '01', '전공필수', '02', '전공선택', '03', '교양필수', '04', '교양선택'),";
-			sql += " b.professor, c.mid, c.final, c.attend";
-			sql += " from table_std_01 a, table_subject_02 b, table_result_03 c where a.stid = c.stid and b.subjectcode = c.dtcode";
+			String sql = "select a.stid, a.stname, decode(substr(a.resident, 8, 1), '1', '남자', '2', '여자', '3', '남자', '4', '여자'), ";
+					  sql += "b.subject, decode(a.dtcode, '01', '전공필수', '02', '전공선택', '03', '교양필수', '04', '교양선택'), ";
+					  sql += "b.professor, c.mid, c.final, c.attend, c.report, NVL((c.mid*0.3) + (c.final*0.3) + (c.attend*0.2) + (c.report*0.1) + (c.etc*0.1), '0'), ";
+					  sql += "case when NVL((c.mid*0.3) + (c.final*0.3) + (c.attend*0.2) + (c.report*0.1) + (c.etc*0.1), '0') >= 90 then 'A' ";
+					  sql += "when NVL((c.mid*0.3) + (c.final*0.3) + (c.attend*0.2) + (c.report*0.1) + (c.etc*0.1), '0') >= 80 then 'B' ";
+					  sql += "when NVL((c.mid*0.3) + (c.final*0.3) + (c.attend*0.2) + (c.report*0.1) + (c.etc*0.1), '0') >= 70 then 'C' ";
+					  sql += "when NVL((c.mid*0.3) + (c.final*0.3) + (c.attend*0.2) + (c.report*0.1) + (c.etc*0.1), '0') >= 60 then 'D' ";
+					  sql += "when NVL((c.mid*0.3) + (c.final*0.3) + (c.attend*0.2) + (c.report*0.1) + (c.etc*0.1), '0') > 60 then 'F' ";
+					  sql += "end 등급 ";
+					  sql += "from table_std_01 a, table_subject_02 b, table_result_03 c where a.stid = c.stid and b.subjectcode = c.dtcode";
 
 			Statement ps = con.createStatement();
 			ResultSet rs = ps.executeQuery(sql);
@@ -57,6 +63,9 @@
 				<td><%=rs.getInt(7) %></td>
 				<td><%=rs.getInt(8) %></td>
 				<td><%=rs.getInt(9) %></td>
+				<td><%=rs.getInt(10) %></td>
+				<td><%=rs.getInt(11) %></td>
+				<td><%=rs.getString(12) %></td>
 			</tr>
 		</table>
 		<%
