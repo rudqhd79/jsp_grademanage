@@ -1,1 +1,25 @@
 @charset "UTF-8";
+
+* {
+	margin:0 auto;
+	padding : 0;
+}
+
+.list_table {
+	border : 1px solid black;
+	border-collapse:collapse;
+}
+.tr_one, .tr_two {
+	border: 1px solid black;
+}
+
+.list_tr {
+	border: 1px solid black;
+}
+
+th, td {
+	padding : 10px;
+border:1px solid black;
+justify-content: center;
+text-align: center;
+}
